@@ -4,18 +4,18 @@ function addRow() {
   
     const reasons4 = [
         "Эдуардо",
-        "Назddар",
+        "Назар",
         "Олег"
     ];
 
     const reasons = [
       "GER40",
-      "EURUdddSD",
+      "EURUSD",
       "XAUUSD"
     ];
   
     const reasons1 = [
-        "IFVGddd",
+        "IFVG",
         "FVG",
         "Фрактал"
       ];
