@@ -15,7 +15,7 @@ function addRow() {
     ];
   
     const reasons1 = [
-        "IFVGddddd",
+        "IFVG",
         "FVG",
         "Фрактал"
       ];
