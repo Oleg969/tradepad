@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Таблица сделок</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h2>Таблица сделок</h2>
+  <div class="top-bar">
+    <button onclick="addRow()">Добавить строку</button>
+    <div class="balance-form">
+      <label for="balanceInput">Баланс:</label>
+      <input type="text" id="balanceInput" value="25000.0$" />
+    </div>
+  </div>
+  <table id="dealsTable">
+    <thead>
+      <tr>
+        <th>Кто ты воин</th>
+        <th>Пара</th>
+        <th>Причина входа</th>
+        <th>% входа</th>
+        <th>Сторона</th>
+        <th>Прибыль ($)</th>
+        <th>Процент</th>
+        <th>Скрины</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Динамически добавляемые строки -->
+    </tbody>
+  </table>
+  <div id="imageModal" style="
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0; width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.8);
+  justify-content: center;
+  align-items: center;
+">
+  <span id="modalClose" style="
+    position: absolute;
+      top: 15px;
+      right: 10px;
+      background: #fff;
+      color: #000;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 16px;
+      z-index: 10000;">&times;</span>
+  <img id="modalImg" src="" style="width: 95%; height: 95%; border-radius: 8px;" />
+</div>
+  <script src="script.js"></script>
+</body>
+</html>
