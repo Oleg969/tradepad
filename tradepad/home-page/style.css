@@ -1,0 +1,99 @@
+* body {
+    background-color: #111;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+  }
+  
+  table, tbody, tr, td {
+   overflow: visible !important;
+  position: relative;
+}
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 20px;
+  }
+  
+  th, td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #333;
+  }
+  
+  th {
+    background-color: #2a2a2a;
+  }
+  
+  .positive {
+    color: #00ff99;
+  }
+  
+  .negative {
+    color: #ff4d4d;
+  }
+  
+  button {
+    background-color: #00aaff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  button:hover {
+    background-color: #0088cc;
+  }
+
+  select {
+    background-color: #2a2a2a;
+    color: #fff;
+    border: 1px solid #444;
+    border-radius: 13px;
+    padding: 4px;
+  }
+
+  select[multiple] {
+    height: auto;
+    max-height: 150px;
+  }
+
+  .header-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+    padding: 10px;
+  }
+  
+
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .balance-form {
+    background-color: #1e1e1e;
+    padding: 10px 15px;
+    border-radius: 5px;
+    color: white;
+  }
+
+  .balance-form input {
+    background-color: transparent;
+    color: #00ff99;
+    border: none;
+    font-weight: bold;
+    width: 100px;
+  }
+
+  #dealsTable {
+    width: 100%;
+    border-collapse: collapse;
+  }
