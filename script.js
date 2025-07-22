@@ -1,7 +1,40 @@
 function addRow() {
     const table = document.getElementById("dealsTable").getElementsByTagName("tbody")[0];
     const row = table.insertRow();
-  
+    
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbw7TakCljZkHb4B_7KUsOaEd0fXbMn9jOsool6OzlUkEUvrImWsjBeTaibftXxpfMOm3A/exec'; // Замените на ваш URL
+
+    function saveTable() {
+      const table = document.getElementById('dealsTable');
+      const rows = table.querySelectorAll('tbody tr');
+
+      rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        const data = {
+          who: cells[0].innerText,
+          pair: cells[1].innerText,
+          reason: cells[2].innerText,
+          entryPercent: cells[3].innerText,
+          side: cells[4].innerText,
+          profit: cells[5].innerText,
+          percent: cells[6].innerText,
+          screenshots: cells[7].innerText
+        };
+
+        fetch(scriptURL, {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(res => console.log('Сохранено:', res))
+        .catch(err => console.error('Ошибка:', err));
+      });
+    }
+
+
+
     const reasons4 = [
         "Эдуардо",
         "Назар",
@@ -351,10 +384,11 @@ function addRow() {
             cell.className = number >= 0 ? "positive" : "negative";  
           }
         }
+
         else if (index === 7) {
           cell.innerHTML = ""; // очистить
-
-
+          let allImageSrcs = [];  // массив всех изображений
+          let currentImageIndex = 0;
 
           ////ПРИКОЛЫ СО СКРИНАМИ
           cell.style.verticalAlign = "top";
@@ -386,6 +420,7 @@ function addRow() {
               reader.onload = (e) => {
                 const img = document.createElement("img");
                 img.src = e.target.result;
+                allImageSrcs.push(img.src);
                 img.style.width = "70px";
                 img.style.height = "auto";
                 img.style.border = "1px solid #ccc";
@@ -410,41 +445,42 @@ function addRow() {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                   const imgWrapper = document.createElement("div");
-imgWrapper.style.position = "relative";
-imgWrapper.style.display = "inline-block";
+                  imgWrapper.style.position = "relative";
+                  imgWrapper.style.display = "inline-block";
 
-const img = document.createElement("img");
-img.src = e.target.result;
-img.style.width = "65px";
-img.style.border = "1px solid #ccc";
-img.style.borderRadius = "4px";
-img.style.cursor = "pointer";
-img.style.objectFit = "cover";
-img.addEventListener("click", () => openModal(img.src));
+                  const img = document.createElement("img");
+                  img.src = e.target.result;
+                  allImageSrcs.push(img.src);
+                  img.style.width = "65px";
+                  img.style.border = "1px solid #ccc";
+                  img.style.borderRadius = "4px";
+                  img.style.cursor = "pointer";
+                  img.style.objectFit = "cover";
+                  img.addEventListener("click", () => openModal(img.src));
 
-// ❌ Кнопка удаления
-const deleteBtn = document.createElement("span");
-deleteBtn.textContent = "✕";
-deleteBtn.title = "Удалить изображение";
-deleteBtn.style.position = "absolute";
-deleteBtn.style.top = "2px";
-deleteBtn.style.right = "2px";
-deleteBtn.style.background = "rgba(0,0,0,0.6)";
-deleteBtn.style.color = "#fff";
-deleteBtn.style.fontSize = "12px";
-deleteBtn.style.padding = "2px 5px";
-deleteBtn.style.borderRadius = "50%";
-deleteBtn.style.cursor = "pointer";
-deleteBtn.style.zIndex = "10";
+                  // ❌ Кнопка удаления
+                  const deleteBtn = document.createElement("span");
+                  deleteBtn.textContent = "✕";
+                  deleteBtn.title = "Удалить изображение";
+                  deleteBtn.style.position = "absolute";
+                  deleteBtn.style.top = "2px";
+                  deleteBtn.style.right = "2px";
+                  deleteBtn.style.background = "rgba(0,0,0,0.6)";
+                  deleteBtn.style.color = "#fff";
+                  deleteBtn.style.fontSize = "12px";
+                  deleteBtn.style.padding = "2px 5px";
+                  deleteBtn.style.borderRadius = "50%";
+                  deleteBtn.style.cursor = "pointer";
+                  deleteBtn.style.zIndex = "10";
 
-deleteBtn.addEventListener("click", (event) => {
-  event.stopPropagation(); // чтобы не открыть модал
-  imgWrapper.remove();
-});
+                  deleteBtn.addEventListener("click", (event) => {
+                    event.stopPropagation(); // чтобы не открыть модал
+                    imgWrapper.remove();
+                  });
 
-imgWrapper.appendChild(img);
-imgWrapper.appendChild(deleteBtn);
-imagesContainer.appendChild(imgWrapper);
+                  imgWrapper.appendChild(img);
+                  imgWrapper.appendChild(deleteBtn);
+                  imagesContainer.appendChild(imgWrapper);
                 };
                 reader.readAsDataURL(blob);
                 event.preventDefault();
@@ -456,6 +492,8 @@ imagesContainer.appendChild(imgWrapper);
           // Вспомогательная функция открытия модального окна с большим изображением
           function openModal(src) {
           let modal = document.getElementById("imageModal");
+
+          currentImageIndex = allImageSrcs.indexOf(src); // сохраняем индекс текущего изображения
 
           if (!modal) {
             modal = document.createElement("div");
@@ -470,8 +508,26 @@ imagesContainer.appendChild(imgWrapper);
             modal.style.justifyContent = "center";
             modal.style.alignItems = "center";
             modal.style.zIndex = "9999";
+            modal.style.flexDirection = "column";
+            modal.style.gap = "20px";
 
-            // Кнопка "✕"
+            const modalContent = document.createElement("div");
+            modalContent.style.position = "relative";
+            modalContent.style.display = "flex";
+            modalContent.style.alignItems = "center";
+            modalContent.style.justifyContent = "center";
+            modalContent.style.gap = "30px";
+            modal.appendChild(modalContent);
+
+            const modalImage = document.createElement("img");
+            modalImage.style.maxWidth = "90%";
+            modalImage.style.maxHeight = "90%";
+            modalImage.style.borderRadius = "10px";
+            modalImage.style.boxShadow = "0 0 20px rgba(0,0,0,0.7)";
+            modalImage.style.cursor = "default";
+            modal.appendChild(modalImage);
+
+            // Кнопка закрытия
             const closeBtn = document.createElement("div");
             closeBtn.textContent = "✕";
             closeBtn.style.position = "absolute";
@@ -482,125 +538,76 @@ imagesContainer.appendChild(imgWrapper);
             closeBtn.style.cursor = "pointer";
             closeBtn.style.userSelect = "none";
             closeBtn.style.zIndex = "10000";
-
             closeBtn.addEventListener("click", () => {
               modal.style.display = "none";
             });
-
-            // Изображение
-            const modalImage = document.createElement("img");
-            modalImage.style.maxWidth = "90%";
-            modalImage.style.maxHeight = "90%";
-            modalImage.style.borderRadius = "10px";
-            modalImage.style.boxShadow = "0 0 20px rgba(0,0,0,0.7)";
-            modalImage.style.cursor = "default";
-
             modal.appendChild(closeBtn);
-            modal.appendChild(modalImage);
+
+            // Стрелка влево
+            const leftArrow = document.createElement("div");
+            leftArrow.textContent = "◀";
+            leftArrow.style.fontSize = "48px";
+            leftArrow.style.color = "#fff";
+            leftArrow.style.cursor = "pointer";
+            leftArrow.style.userSelect = "none";
+            leftArrow.style.zIndex = "10000";
+            leftArrow.addEventListener("click", () => {
+              if (currentImageIndex > 0) {
+                currentImageIndex--;
+                modal.querySelector("#modalImg").src = allImageSrcs[currentImageIndex];
+              }
+            });
+            modal.appendChild(leftArrow);
+
+            // Стрелка вправо
+            const rightArrow = document.createElement("div");
+            rightArrow.textContent = "▶";
+            rightArrow.style.position = "absolute";
+            rightArrow.style.right = "20px";
+            rightArrow.style.fontSize = "48px";
+            rightArrow.style.color = "#fff";
+            rightArrow.style.cursor = "pointer";
+            rightArrow.style.userSelect = "none";
+            rightArrow.style.zIndex = "10000";
+            rightArrow.addEventListener("click", () => {
+              if (currentImageIndex < allImageSrcs.length - 1) {
+                currentImageIndex++;
+                modal.querySelector("#modalImg").src = allImageSrcs[currentImageIndex];
+              }
+            });
+            modal.appendChild(rightArrow);
+
             document.body.appendChild(modal);
-          }
-          document.addEventListener("keydown", (e) => {
-          if (e.key === "Escape") {
-            const modal = document.getElementById("imageModal");
-            if (modal) {
-              modal.style.display = "none";
-            }
-          }
-        });
-          modal.querySelector("img").src = src;
+          };
+
+          // Если модалки нет — создаем
+          //if (!modal) {
+          //  createModalIfNeeded();
+          //}
+
+           
+
+          const modalImage = modal.querySelector("#modalImg");
+          if (modalImage) modalImage.src = src;
           modal.style.display = "flex";
         }
 
+          document.addEventListener("keydown", (e) => {
+            const modal = document.getElementById("imageModal");
+            if (!modal || modal.style.display !== "flex") return;
 
+            const modalImage = modal.querySelector("#modalImg");
 
-          // cell.style.verticalAlign = "top";
-          // cell.style.overflow = "visible";
-
-          // const fileInput = document.createElement("input");
-          // fileInput.type = "file";
-          // fileInput.accept = "image/*";
-          // fileInput.style.display = "none";
-          
-          // // СКРИНЫ — вертикально, с прокруткой
-          // const imagesContainer = document.createElement("div");
-          // imagesContainer.style.display = "flex";
-          // imagesContainer.style.flexDirection = "column";
-          // imagesContainer.style.overflowY = "auto";
-          // imagesContainer.style.maxHeight = "32px";
-          // imagesContainer.style.width = "80px";
-          // imagesContainer.style.gap = "6px";
-          // imagesContainer.style.padding = "4px";
-          // imagesContainer.style.border = "1px solid #1e1e1e";
-          // imagesContainer.style.borderRadius = "6px";
-          // imagesContainer.style.background = "#1e1e1e";
-          
-          // // КНОПКА "+"
-          // const addBtn = document.createElement("div");
-          // addBtn.textContent = "+";
-          // addBtn.title = "Добавить скриншот";
-          // addBtn.style.width = "32px";
-          // addBtn.style.height = "32px";
-          // addBtn.style.display = "flex";
-          // addBtn.style.justifyContent = "center";
-          // addBtn.style.alignItems = "center";
-          // addBtn.style.border = "1px dashed #999";
-          // addBtn.style.borderRadius = "4px";
-          // addBtn.style.cursor = "pointer";
-          // addBtn.style.fontSize = "20px";
-          // addBtn.style.userSelect = "none";
-          // addBtn.style.backgroundColor = "#1e1e1e";
-          
-          // // ОБЁРТКА: скрины + кнопка
-          // const wrapperDiv = document.createElement("div");
-          // wrapperDiv.style.display = "flex";
-          // wrapperDiv.style.flexDirection = "row";
-          // wrapperDiv.style.alignItems = "flex-start";
-          // wrapperDiv.style.gap = "6px";
-          
-          // wrapperDiv.appendChild(imagesContainer);
-          // wrapperDiv.appendChild(addBtn);
-          
-          // // КЛИК по кнопке
-          // addBtn.addEventListener("click", () => fileInput.click());
-          
-          // // Загрузка изображений
-          // fileInput.addEventListener("change", (event) => {
-          //   const files = event.target.files;
-          //   for (const file of files) {
-          //     const reader = new FileReader();
-          //     reader.onload = function (e) {
-          //       const img = document.createElement("img");
-          //       img.src = e.target.result;
-          //       img.style.width = "65px";
-          //       img.style.border = "1px solid #ccc";
-          //       img.style.borderRadius = "4px";
-          //       img.style.cursor = "pointer";
-          //       img.style.objectFit = "cover";
-          //       img.addEventListener("click", () => openModal(img.src));
-          //       imagesContainer.appendChild(img);
-          //     };
-          //     reader.readAsDataURL(file);
-          //   }
-          //   fileInput.value = "";
-          // });
-          
-          
-          // // ДОБАВЛЯЕМ В ЯЧЕЙКУ
-          // cell.style.verticalAlign = "top";
-          // cell.style.overflow = "visible";
-          // cell.appendChild(fileInput);
-          // cell.appendChild(wrapperDiv);
-          
-          // function openModal(src) {
-          //   const modal = document.getElementById('imageModal');
-          //   const modalImage = document.getElementById('modalImg');
-          //   modalImage.src = src;  // сюда должно попадать именно base64 или путь
-          //   modal.style.display = 'flex';
-          // }
-          
-          // document.getElementById('imageModal').addEventListener('click', () => {
-          //   document.getElementById('imageModal').style.display = 'none';
-          // });
+            if (e.key === "Escape") {
+              modal.style.display = "none";
+            } else if (e.key === "ArrowLeft" && currentImageIndex > 0) {
+              currentImageIndex--;
+              modalImage.src = allImageSrcs[currentImageIndex];
+            } else if (e.key === "ArrowRight" && currentImageIndex < allImageSrcs.length - 1) {
+              currentImageIndex++;
+              modalImage.src = allImageSrcs[currentImageIndex];
+            }
+          }); 
         }
       }
     });
