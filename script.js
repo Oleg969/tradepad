@@ -1,8 +1,4 @@
-function addRow() {
-    const table = document.getElementById("dealsTable").getElementsByTagName("tbody")[0];
-    const row = table.insertRow();
-    
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbw7TakCljZkHb4B_7KUsOaEd0fXbMn9jOsool6OzlUkEUvrImWsjBeTaibftXxpfMOm3A/exec'; // Замените на ваш URL
+const scriptURL = 'https://script.google.com/macros/s/AKfycbw7TakCljZkHb4B_7KUsOaEd0fXbMn9jOsool6OzlUkEUvrImWsjBeTaibftXxpfMOm3A/exec'; // Замените на ваш URL
 
     function saveTable() {
       const table = document.getElementById('dealsTable');
@@ -33,7 +29,9 @@ function addRow() {
       });
     }
 
-
+function addRow() {
+    const table = document.getElementById("dealsTable").getElementsByTagName("tbody")[0];
+    const row = table.insertRow();
 
     const reasons4 = [
         "Эдуардо",
