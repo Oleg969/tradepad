@@ -1,4 +1,4 @@
-const scriptURL = 'https://script.google.com/macros/s/AKfycbw7TakCljZkHb4B_7KUsOaEd0fXbMn9jOsool6OzlUkEUvrImWsjBeTaibftXxpfMOm3A/exec'; // Замените на ваш URL
+const scriptURL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec'; // ← Вставь сюда свой URL
 
     function saveTable() {
       const table = document.getElementById('dealsTable');
@@ -6,7 +6,7 @@ const scriptURL = 'https://script.google.com/macros/s/AKfycbw7TakCljZkHb4B_7KUsO
 
       rows.forEach(row => {
         const cells = row.querySelectorAll('td');
-        const data = {
+        const rowData = {
           who: cells[0].innerText,
           pair: cells[1].innerText,
           reason: cells[2].innerText,
@@ -19,15 +19,21 @@ const scriptURL = 'https://script.google.com/macros/s/AKfycbw7TakCljZkHb4B_7KUsO
 
         fetch(scriptURL, {
           method: 'POST',
-          body: JSON.stringify(data),
-          headers: {
-            'Content-Type': 'application/json'
-          }
+          body: JSON.stringify(rowData),
+          headers: { 'Content-Type': 'application/json' }
         })
-        .then(res => console.log('Сохранено:', res))
-        .catch(err => console.error('Ошибка:', err));
+        .then(response => response.json())
+        .then(data => {
+          console.log("Успешно:", data);
+        })
+        .catch(error => {
+          console.error("Ошибка:", error);
+        });
       });
     }
+
+    // Назначаем функцию после загрузки DOM
+    document.getElementById('saveBtn').addEventListener('click', saveTable);
 
 function addRow() {
     const table = document.getElementById("dealsTable").getElementsByTagName("tbody")[0];
