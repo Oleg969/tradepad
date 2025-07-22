@@ -1,9 +1,9 @@
-const scriptURL = 'https://script.google.com/macros/s/AKfycbzDv9EhQZtT768l_x0CcMZHWFIA5-a6hXd5joplPTPb2zOFRgEOkFwoVHaZ-nq8iyBK2Q/exec'; // ← Вставь сюда свой URL
+
 
     function saveTable() {
       const table = document.getElementById('dealsTable');
       const rows = table.querySelectorAll('tbody tr');
-
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzDv9EhQZtT768l_x0CcMZHWFIA5-a6hXd5joplPTPb2zOFRgEOkFwoVHaZ-nq8iyBK2Q/exec'; // ← Вставь сюда свой URL
       rows.forEach(row => {
         const cells = row.querySelectorAll('td');
         const rowData = {
